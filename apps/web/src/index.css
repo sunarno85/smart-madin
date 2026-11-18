@@ -1,0 +1,396 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+  }
+}
+
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Print styles — no backgrounds on app chrome, no scrollbars, multi-page, clean white */
+@media print {
+  /* Page setup */
+  @page {
+    size: A4 portrait;
+    margin: 15mm 12mm 15mm 12mm;
+  }
+  @page:first {
+    margin-top: 12mm;
+  }
+
+  /* Hide ALL app chrome: sidebar, header, mobile overlay */
+  aside, header, nav, [role="complementary"], [role="navigation"],
+  .sidebar-nav, [data-sidebar],
+  .fixed.inset-0, .fixed.inset-y-0, .sticky {
+    display: none !important;
+  }
+
+  /* === HIDE ALL SCROLLBARS === */
+  *::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+  * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  /* Force all overflow visible — no scroll containers in print */
+  html, body, main, main > div, main > div > div,
+  .h-screen, .overflow-hidden, .overflow-auto, .overflow-x-auto, .overflow-y-auto, .overflow-scroll {
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  /* === REMOVE APP BACKGROUNDS — the flex h-screen bg-gray-50 wrapper, dark mode, cards === */
+  .bg-gray-50, .bg-gray-100,
+  .bg-background, .bg-card, .bg-popover, .bg-muted, .bg-accent, .bg-secondary,
+  .dark .bg-background, .dark .bg-card,
+  [class*="bg-white"],
+  .bg-gradient-to-br, .bg-gradient-to-r, .bg-gradient-to-b {
+    background-color: transparent !important;
+    background-image: none !important;
+    background: transparent !important;
+  }
+  /* Body always white */
+  body {
+    background: white !important;
+    background-color: white !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    background: transparent !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  body {
+    color: #111827 !important;
+    font-size: 10px;
+    line-height: 1.4;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    overflow: visible !important;
+  }
+
+  /* Remove box shadows and text shadows */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* === SOFT ACCENT COLORS for schedule day sections === */
+  .print-bg-keep.print-bg-minggu { background-color: #f9fafb !important; }
+  .print-bg-keep.print-bg-senin { background-color: #eff6ff !important; }
+  .print-bg-keep.print-bg-selasa { background-color: #faf5ff !important; }
+  .print-bg-keep.print-bg-rabu { background-color: #f0fdf4 !important; }
+  .print-bg-keep.print-bg-kamis { background-color: #fefce8 !important; }
+  .print-bg-keep.print-bg-jumat { background-color: #ecfeff !important; }
+  .print-bg-keep.print-bg-sabtu { background-color: #fff7ed !important; }
+  /* Level colors */
+  .print-bg-keep.print-bg-tpq { background-color: #dbeafe !important; }
+  .print-bg-keep.print-bg-awaliyah { background-color: #dcfce7 !important; }
+  .print-bg-keep.print-bg-wustha { background-color: #f3e8ff !important; }
+  .print-bg-keep.print-bg-ulya { background-color: #ffedd5 !important; }
+
+  /* === MULTI-PAGE SUPPORT === */
+  /* Prevent orphans/widows */
+  body {
+    orphans: 3 !important;
+    widows: 3 !important;
+  }
+
+  /* Table: repeat header on every page, allow rows to break */
+  thead {
+    display: table-header-group !important;
+  }
+  tfoot {
+    display: table-footer-group !important;
+  }
+  /* Small tables: avoid breaking inside */
+  table.page-keep {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  /* Large tables: allow rows to break across pages */
+  table:not(.page-keep) {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+  table:not(.page-keep) tr {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+  /* Avoid breaking right after a header or before a footer */
+  thead, tfoot, caption {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  table:not(.page-keep) thead, table:not(.page-keep) caption {
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+  }
+  /* Individual cells should not break */
+  td, th {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  /* Allow page breaks between sections/cards */
+  .space-y-6 > * {
+    break-inside: auto;
+  }
+  /* Print section headers stay with their content */
+  .print-section-header {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  /* Allow content to break after headers */
+  .print-section-content {
+    break-before: auto !important;
+    page-break-before: auto !important;
+  }
+
+  /* Allow page break between sections */
+  .print\:break-before-page {
+    page-break-before: auto !important;
+  }
+  .print\:break-after-avoid {
+    page-break-after: avoid !important;
+  }
+
+  /* Print header on every page */
+  .print\:page-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 12mm;
+    border-bottom: 2px solid #1f2937;
+    text-align: center;
+    z-index: 1000;
+  }
+
+  /* Footer on every page */
+  .print\:page-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 6px 12mm;
+    border-top: 1px solid #d1d5db;
+    text-align: center;
+    font-size: 9px;
+    color: #6b7280;
+    z-index: 1000;
+  }
+
+  /* Show all tab content in print — not just active tab */
+  [role="tabpanel"],
+  [data-state="active"], [data-state="inactive"],
+  [data-radix-tabs-content] {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Show/hide helpers */
+  .print\:block { display: block !important; }
+  .print\:hidden { display: none !important; }
+  .print\:flex { display: flex !important; }
+  .print\:inline-flex { display: inline-flex !important; }
+  .print\:inline { display: inline !important; }
+  .print\:inline-block { display: inline-block !important; }
+
+  /* Borders & decoration */
+  .print\:rounded-none { border-radius: 0 !important; }
+  .print\:border { border: 1px solid #d1d5db !important; }
+  .print\:border-b { border-bottom: 1px solid #d1d5db !important; }
+  .print\:border-t { border-top: 1px solid #d1d5db !important; }
+  .print\:border-2 { border: 2px solid #1f2937 !important; }
+  .print\:shadow-none { box-shadow: none !important; }
+
+  /* === Soft background colors per level/day === */
+  /* Blue family */
+  .print\:bg-blue-50 { background-color: #eff6ff !important; }
+  .print\:bg-blue-100 { background-color: #dbeafe !important; }
+  .print\:text-blue-800 { color: #1e40af !important; }
+  .print\:border-blue-200 { border-color: #bfdbfe !important; }
+  .print\:border-blue-100 { border-color: #bfdbfe !important; }
+  .print\:border-blue-300 { border-color: #93c5fd !important; }
+  /* Green family */
+  .print\:bg-green-50 { background-color: #f0fdf4 !important; }
+  .print\:bg-green-100 { background-color: #dcfce7 !important; }
+  .print\:text-green-800 { color: #166534 !important; }
+  .print\:border-green-200 { border-color: #bbf7d0 !important; }
+  .print\:border-green-300 { border-color: #86efac !important; }
+  /* Purple family */
+  .print\:bg-purple-50 { background-color: #faf5ff !important; }
+  .print\:bg-purple-100 { background-color: #f3e8ff !important; }
+  .print\:text-purple-800 { color: #6b21a8 !important; }
+  .print\:border-purple-200 { border-color: #e9d5ff !important; }
+  .print\:border-purple-300 { border-color: #d8b4fe !important; }
+  /* Orange family */
+  .print\:bg-orange-50 { background-color: #fff7ed !important; }
+  .print\:bg-orange-100 { background-color: #ffedd5 !important; }
+  .print\:text-orange-800 { color: #9a3412 !important; }
+  .print\:border-orange-200 { border-color: #fed7aa !important; }
+  .print\:border-orange-300 { border-color: #fdba74 !important; }
+  /* Yellow family */
+  .print\:bg-yellow-50 { background-color: #fefce8 !important; }
+  .print\:bg-yellow-100 { background-color: #fef9c3 !important; }
+  .print\:text-yellow-800 { color: #854d0e !important; }
+  .print\:border-yellow-200 { border-color: #fef08a !important; }
+  /* Cyan family */
+  .print\:bg-cyan-50 { background-color: #ecfeff !important; }
+  .print\:bg-cyan-100 { background-color: #cffafe !important; }
+  .print\:text-cyan-800 { color: #155e75 !important; }
+  .print\:border-cyan-200 { border-color: #a5f3fc !important; }
+  /* Gray family */
+  .print\:bg-gray-50 { background-color: #f9fafb !important; }
+  .print\:bg-gray-100 { background-color: #f3f4f6 !important; }
+  .print\:bg-gray-200 { background-color: #e5e7eb !important; }
+  .print\:text-gray-800 { color: #1f2937 !important; }
+  .print\:text-gray-900 { color: #111827 !important; }
+  .print\:text-gray-600 { color: #4b5563 !important; }
+  .print\:text-gray-500 { color: #6b7280 !important; }
+  .print\:text-gray-400 { color: #9ca3af !important; }
+  .print\:border-gray-200 { border-color: #e5e7eb !important; }
+  .print\:border-gray-300 { border-color: #d1d5db !important; }
+  .print\:divide-gray-200 > * + * { border-color: #e5e7eb !important; }
+  .print\:border-gray-800 { border-color: #1f2937 !important; }
+
+  /* Red */
+  .print\:text-red-800 { color: #991b1b !important; }
+  .print\:text-red-600 { color: #dc2626 !important; }
+
+  /* Text sizes */
+  .print\:text-9px { font-size: 9px !important; line-height: 12px !important; }
+  .print\:text-xs { font-size: 0.75rem !important; line-height: 1rem !important; }
+  .print\:text-sm { font-size: 0.875rem !important; line-height: 1.25rem !important; }
+  .print\:text-base { font-size: 1rem !important; line-height: 1.5rem !important; }
+  .print\:text-lg { font-size: 1.125rem !important; line-height: 1.75rem !important; }
+  .print\:text-xl { font-size: 1.25rem !important; line-height: 1.75rem !important; }
+  .print\:text-\[10px\] { font-size: 10px !important; line-height: 14px !important; }
+
+  /* Padding/margin */
+  .print\:p-0 { padding: 0 !important; }
+  .print\:p-1 { padding: 0.25rem !important; }
+  .print\:p-2 { padding: 0.5rem !important; }
+  .print\:p-3 { padding: 0.75rem !important; }
+  .print\:p-4 { padding: 1rem !important; }
+  .print\:px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+  .print\:px-4 { padding-left: 1rem !important; padding-right: 1rem !important; }
+  .print\:py-1 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+  .print\:py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+  .print\:pb-2 { padding-bottom: 0.5rem !important; }
+  .print\:pt-2 { padding-top: 0.5rem !important; }
+  .print\:mb-0 { margin-bottom: 0 !important; }
+  .print\:mb-1 { margin-bottom: 0.25rem !important; }
+  .print\:mb-2 { margin-bottom: 0.5rem !important; }
+  .print\:mb-3 { margin-bottom: 0.75rem !important; }
+  .print\:mt-2 { margin-top: 0.5rem !important; }
+  .print\:mt-4 { margin-top: 1rem !important; }
+  .print\:space-y-0 > * + * { margin-top: 0 !important; margin-bottom: 0 !important; }
+  .print\:gap-1 { gap: 0.25rem !important; }
+  .print\:gap-2 { gap: 0.5rem !important; }
+  .print\:gap-3 { gap: 0.75rem !important; }
+  .print\:gap-4 { gap: 1rem !important; }
+
+  /* Grid */
+  .print\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .print\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .print\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  .print\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+
+  /* Break control */
+  .print\:break-inside-avoid { break-inside: avoid !important; page-break-inside: avoid !important; }
+  .print\:break-before-page { page-break-before: always !important; }
+  .print\:break-after-page { page-break-after: always !important; }
+  .print\:break-before-auto { page-break-before: auto !important; }
+
+  /* Hover reset */
+  .print\:hover\:bg-transparent:hover { background-color: transparent !important; }
+
+  /* Width */
+  .print\:w-full { width: 100% !important; }
+  .print\:min-w-0 { min-width: 0 !important; }
+}

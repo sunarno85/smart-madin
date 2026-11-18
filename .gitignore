@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+*.log.*
+*freebuffpreview*
+.DS_Store
+uploads/
+coverage/
+
+# State/tools lokal & artefak uji
+.freebuff/
+.qodo/
+.freebufftoken.txt
+test-photo.png

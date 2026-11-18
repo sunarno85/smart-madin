@@ -1,0 +1,31 @@
+{
+  "name": "smart-madin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SMART MADIN - Sistem Informasi Madrasah Diniyah Terpadu",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm run dev -w apps/api",
+    "dev:web": "npm run dev -w apps/web",
+    "build": "npm run build -w apps/api && npm run build -w apps/web",
+    "build:api": "npm run build -w apps/api",
+    "build:web": "npm run build -w apps/web",
+    "lint": "npm run lint -w apps/api && npm run lint -w apps/web",
+    "test:e2e:api": "npm run test:e2e -w apps/api",
+    "prisma:generate": "cd prisma && npx prisma generate",
+    "prisma:migrate": "cd prisma && npx prisma migrate dev",
+    "prisma:studio": "cd prisma && npx prisma studio",
+    "sync:permissions": "cd prisma && npx ts-node sync-permissions.ts",
+    "import:madin": "cd prisma && npx ts-node import-madin.ts",
+    "seed": "cd prisma && npx ts-node seed.ts",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "typescript": "^5.7.0"
+  }
+}
