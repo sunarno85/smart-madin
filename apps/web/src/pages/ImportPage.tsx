@@ -11,6 +11,7 @@ import {
   Upload, FileSpreadsheet, Columns, Eye, AlertTriangle,
   CheckCircle2, ArrowRight, ArrowLeft, Download, AlertCircle,
 } from 'lucide-react';
+import { useCan } from '../components/Can';
 
 type Step = 'upload' | 'module' | 'mapping' | 'preview' | 'duplicates' | 'result';
 
@@ -187,6 +188,23 @@ export function ImportPage() {
   ];
 
   const currentStepIndex = steps.findIndex((s) => s.key === step);
+  const canImport = useCan('imports.create');
+
+  if (!canImport) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">Import Excel</h1>
+          <p className="text-muted-foreground">Impor data santri atau pegawai dari file Excel</p>
+        </div>
+        <Card>
+          <CardContent className="p-8 text-center text-sm text-muted-foreground">
+            Anda tidak memiliki izin untuk mengimpor data. Hubungi administrator.
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

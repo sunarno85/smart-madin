@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Can } from '../components/Can';
 import { toast } from 'sonner';
 
 export function ClassesPage() {
@@ -87,7 +88,9 @@ export function ClassesPage() {
           <h1 className="text-2xl font-bold">Kelas</h1>
           <p className="text-muted-foreground">Daftar kelas per tahun ajaran</p>
         </div>
-        <Button onClick={() => { setForm(emptyForm); setOpenCreate(true); }}><Plus className="mr-2 h-4 w-4" />Tambah Kelas</Button>
+        <Can permission="classes.create">
+          <Button onClick={() => { setForm(emptyForm); setOpenCreate(true); }}><Plus className="mr-2 h-4 w-4" />Tambah Kelas</Button>
+        </Can>
       </div>
 
       <Card>
@@ -125,8 +128,12 @@ export function ClassesPage() {
                     <TableCell className="text-center">{cls._count?.studentClassHistories || 0}</TableCell>
                     <TableCell className="text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(cls)}><Edit size={14} /></Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setOpenDelete(cls)}><Trash2 size={14} /></Button>
+                        <Can permission="classes.update">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(cls)}><Edit size={14} /></Button>
+                        </Can>
+                        <Can permission="classes.delete">
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setOpenDelete(cls)}><Trash2 size={14} /></Button>
+                        </Can>
                       </div>
                     </TableCell>
                   </TableRow>

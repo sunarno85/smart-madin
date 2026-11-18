@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { useState, useRef } from 'react';
 import { Save, Upload, Building2, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { Can } from '../components/Can';
 
 const UPLOAD_BASE = api.defaults.baseURL?.replace('/api', '') || '';
 
@@ -84,10 +85,12 @@ export function SchoolProfilePage() {
           <h1 className="text-2xl font-bold">Profil Madrasah</h1>
           <p className="text-muted-foreground">Informasi lembaga madrasah</p>
         </div>
-        <Button onClick={() => form && updateMutation.mutate(form)} loading={updateMutation.isPending} disabled={!form}>
-          <Save className="mr-2 h-4 w-4" />
-          Simpan
-        </Button>
+        <Can permission="settings.update">
+          <Button onClick={() => form && updateMutation.mutate(form)} loading={updateMutation.isPending} disabled={!form}>
+            <Save className="mr-2 h-4 w-4" />
+            Simpan
+          </Button>
+        </Can>
       </div>
 
       {/* Logo Upload */}
@@ -106,23 +109,25 @@ export function SchoolProfilePage() {
                   </div>
                 )}
               </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={logoMutation.isPending}
-                >
-                  <Upload className="mr-1.5 h-3.5 w-3.5" />
-                  {logoMutation.isPending ? 'Uploading...' : 'Upload Logo'}
-                </Button>
-                {(logoUrl || previewUrl) && (
-                  <Button variant="ghost" size="sm" onClick={removeLogo} className="text-destructive hover:text-destructive">
-                    <X className="mr-1.5 h-3.5 w-3.5" />
-                    Hapus
+              <Can permission="settings.update">
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={logoMutation.isPending}
+                  >
+                    <Upload className="mr-1.5 h-3.5 w-3.5" />
+                    {logoMutation.isPending ? 'Uploading...' : 'Upload Logo'}
                   </Button>
-                )}
-              </div>
+                  {(logoUrl || previewUrl) && (
+                    <Button variant="ghost" size="sm" onClick={removeLogo} className="text-destructive hover:text-destructive">
+                      <X className="mr-1.5 h-3.5 w-3.5" />
+                      Hapus
+                    </Button>
+                  )}
+                </div>
+              </Can>
               <input
                 ref={fileInputRef}
                 type="file"

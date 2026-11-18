@@ -11,11 +11,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { ArrowLeft, Edit, Printer, Camera, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDate, formatGender, formatStatus, getStatusColor } from '../lib/utils';
+import { useCan } from '../components/Can';
 
 export function StudentDetailPage() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const canUpdate = useCan('students.update');
 
   const { data: student, isLoading } = useQuery({
     queryKey: ['student', id],
@@ -136,15 +138,17 @@ export function StudentDetailPage() {
                 )}
               </div>
               {/* Upload overlay — hidden on print */}
-              <button
-                className="print:hidden absolute inset-0 flex flex-col items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Camera className="h-6 w-6 text-white mb-1" />
-                <span className="text-[10px] text-white font-medium">
-                  {photoUploadMutation.isPending ? 'Uploading...' : 'Ubah Foto'}
-                </span>
-              </button>
+              {canUpdate && (
+                <button
+                  className="print:hidden absolute inset-0 flex flex-col items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Camera className="h-6 w-6 text-white mb-1" />
+                  <span className="text-[10px] text-white font-medium">
+                    {photoUploadMutation.isPending ? 'Uploading...' : 'Ubah Foto'}
+                  </span>
+                </button>
+              )}
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
               {/* Print-only student number below photo */}
               <div className="hidden print:block text-center mt-1">

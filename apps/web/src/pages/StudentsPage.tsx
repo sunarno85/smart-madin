@@ -16,6 +16,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Plus, Search, Eye, Edit, Trash2, Camera } from 'lucide-react';
 import { toast } from 'sonner';
+import { Can } from '../components/Can';
 import { formatDate, formatGender, formatStatus, getStatusColor } from '../lib/utils';
 
 const EMPTY_FORM = {
@@ -275,7 +276,9 @@ export function StudentsPage() {
           <h1 className="text-2xl font-bold">Santri</h1>
           <p className="text-muted-foreground">Data seluruh santri</p>
         </div>
-        <Button onClick={openCreateDialog}><Plus className="mr-2 h-4 w-4" /> Tambah Santri</Button>
+        <Can permission="students.create">
+          <Button onClick={openCreateDialog}><Plus className="mr-2 h-4 w-4" /> Tambah Santri</Button>
+        </Can>
       </div>
 
       {/* Filters */}
@@ -360,8 +363,12 @@ export function StudentsPage() {
                           <Link to={`/students/${student.id}`}>
                             <Button variant="ghost" size="icon" className="h-8 w-8"><Eye size={16} /></Button>
                           </Link>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(student)}><Edit size={16} /></Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setOpenDelete(student)}><Trash2 size={16} /></Button>
+                          <Can permission="students.update">
+                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(student)}><Edit size={16} /></Button>
+                          </Can>
+                          <Can permission="students.delete">
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setOpenDelete(student)}><Trash2 size={16} /></Button>
+                          </Can>
                         </div>
                       </TableCell>
                     </TableRow>

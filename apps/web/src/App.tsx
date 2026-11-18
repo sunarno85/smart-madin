@@ -141,7 +141,14 @@ export default function App() {
                   <Suspense fallback={<FullPageLoader />}>
                     <Routes>
                       <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                      <Route path="/dashboard" element={<DashboardPage />} />
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <RequirePermission permission="dashboard.read">
+                            <DashboardPage />
+                          </RequirePermission>
+                        }
+                      />
                       <Route path="/about" element={<AboutPage />} />
                       <Route
                         path="/school-profile"

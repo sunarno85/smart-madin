@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Plus, Edit, Trash2, CheckCircle2, Circle } from 'lucide-react';
+import { Can } from '../components/Can';
 import { formatDateShort } from '../lib/utils';
 import { toast } from 'sonner';
 
@@ -68,7 +69,9 @@ export function AcademicYearsPage() {
           <h1 className="text-2xl font-bold">Tahun Ajaran</h1>
           <p className="text-muted-foreground">Manajemen tahun ajaran</p>
         </div>
-        <Button onClick={() => { setForm(emptyForm); setOpenCreate(true); }}><Plus className="mr-2 h-4 w-4" />Tambah Tahun Ajaran</Button>
+        <Can permission="academic_years.create">
+          <Button onClick={() => { setForm(emptyForm); setOpenCreate(true); }}><Plus className="mr-2 h-4 w-4" />Tambah Tahun Ajaran</Button>
+        </Can>
       </div>
 
       <Card>
@@ -143,11 +146,17 @@ export function AcademicYearsPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-1">
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(year)}><Edit size={14} /></Button>
+                        <Can permission="academic_years.update">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(year)}><Edit size={14} /></Button>
+                        </Can>
                         {!year.isActive && (
                           <>
-                            <Button variant="outline" size="sm" onClick={() => activateMutation.mutate(year.id)} loading={activateMutation.isPending}>Aktifkan</Button>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setOpenDelete(year)}><Trash2 size={14} /></Button>
+                            <Can permission="academic_years.manage">
+                              <Button variant="outline" size="sm" onClick={() => activateMutation.mutate(year.id)} loading={activateMutation.isPending}>Aktifkan</Button>
+                            </Can>
+                            <Can permission="academic_years.delete">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setOpenDelete(year)}><Trash2 size={14} /></Button>
+                            </Can>
                           </>
                         )}
                       </div>

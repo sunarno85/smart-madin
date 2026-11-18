@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Plus, Shield, Key, UserCheck, UserX, Edit, Eye } from 'lucide-react';
 import { formatStatus, getStatusColor } from '../lib/utils';
+import { Can } from '../components/Can';
 
 export function UsersPage() {
   const queryClient = useQueryClient();
@@ -96,6 +97,7 @@ export function UsersPage() {
           <h1 className="text-2xl font-bold">Pengguna</h1>
           <p className="text-muted-foreground">Manajemen pengguna dan akses sistem</p>
         </div>
+        <Can permission="users.create">
         <Dialog open={openCreate} onOpenChange={setOpenCreate}>
           <DialogTrigger asChild>
             <Button><Plus className="mr-2 h-4 w-4" />Tambah Pengguna</Button>
@@ -153,6 +155,7 @@ export function UsersPage() {
             </form>
           </DialogContent>
         </Dialog>
+        </Can>
       </div>
 
       {/* Users Table */}
@@ -217,19 +220,23 @@ export function UsersPage() {
                         <Button variant="ghost" size="icon" className="h-8 w-8" title="Detail" onClick={() => setOpenDetail(user.id)}>
                           <Eye size={16} />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" title="Edit" onClick={() => handleEdit(user)}>
-                          <Edit size={16} />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" title="Reset Password" onClick={() => { setOpenPassword(user.id); setNewPassword(''); }}>
-                          <Key size={16} />
-                        </Button>
-                        <Button
-                          variant="ghost" size="icon" className="h-8 w-8"
-                          title={user.isActive ? 'Nonaktifkan' : 'Aktifkan'}
-                          onClick={() => toggleActiveMutation.mutate(user.id)}
-                        >
-                          {user.isActive ? <UserX size={16} className="text-destructive" /> : <UserCheck size={16} className="text-green-600" />}
-                        </Button>
+                        <Can permission="users.update">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" title="Edit" onClick={() => handleEdit(user)}>
+                            <Edit size={16} />
+                          </Button>
+                        </Can>
+                        <Can permission="users.manage">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" title="Reset Password" onClick={() => { setOpenPassword(user.id); setNewPassword(''); }}>
+                            <Key size={16} />
+                          </Button>
+                          <Button
+                            variant="ghost" size="icon" className="h-8 w-8"
+                            title={user.isActive ? 'Nonaktifkan' : 'Aktifkan'}
+                            onClick={() => toggleActiveMutation.mutate(user.id)}
+                          >
+                            {user.isActive ? <UserX size={16} className="text-destructive" /> : <UserCheck size={16} className="text-green-600" />}
+                          </Button>
+                        </Can>
                       </div>
                     </TableCell>
                   </TableRow>

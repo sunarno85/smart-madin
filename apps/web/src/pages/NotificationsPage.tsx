@@ -17,6 +17,7 @@ import {
   CheckCircle2, XCircle, Clock, AlertCircle, Plus, Trash2, Edit, Eye,
   Zap, Users, GraduationCap, CreditCard, FileText, Filter,
 } from 'lucide-react';
+import { Can, useCan } from '../components/Can';
 
 const TYPE_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   ATTENDANCE_ALERT: { label: 'Alert Absen', color: 'bg-red-100 text-red-800', icon: <AlertCircle size={14} /> },
@@ -41,7 +42,8 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.
 
 export function NotificationsPage() {
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState('send');
+  const canCreate = useCan('notifications.create');
+  const [activeTab, setActiveTab] = useState(canCreate ? 'send' : 'history');
   const [sendDialogOpen, setSendDialogOpen] = useState(false);
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<any>(null);
@@ -193,14 +195,16 @@ export function NotificationsPage() {
           <h1 className="text-2xl font-bold">Notifikasi</h1>
           <p className="text-muted-foreground">Kirim notifikasi ke orang tua via WhatsApp / SMS</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => { setEditingTemplate(null); setTemplateForm({ name: '', type: 'GENERAL', subject: '', message: '' }); setTemplateDialogOpen(true); }} className="gap-2">
-            <Settings className="h-4 w-4" /> Kelola Template
-          </Button>
-          <Button onClick={() => setSendDialogOpen(true)} className="gap-2">
-            <Send className="h-4 w-4" /> Kirim Notifikasi
-          </Button>
-        </div>
+        {canCreate && (
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => { setEditingTemplate(null); setTemplateForm({ name: '', type: 'GENERAL', subject: '', message: '' }); setTemplateDialogOpen(true); }} className="gap-2">
+              <Settings className="h-4 w-4" /> Kelola Template
+            </Button>
+            <Button onClick={() => setSendDialogOpen(true)} className="gap-2">
+              <Send className="h-4 w-4" /> Kirim Notifikasi
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Stats */}
@@ -234,13 +238,19 @@ export function NotificationsPage() {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="send" className="gap-2"><Send className="h-4 w-4" /> Kirim</TabsTrigger>
-          <TabsTrigger value="quick" className="gap-2"><Zap className="h-4 w-4" /> Cepat</TabsTrigger>
+        <TabsList className={`grid w-full ${canCreate ? 'grid-cols-4' : 'grid-cols-2'}`}>
+          {canCreate && (
+            <>
+              <TabsTrigger value="send" className="gap-2"><Send className="h-4 w-4" /> Kirim</TabsTrigger>
+              <TabsTrigger value="quick" className="gap-2"><Zap className="h-4 w-4" /> Cepat</TabsTrigger>
+            </>
+          )}
           <TabsTrigger value="templates" className="gap-2"><FileText className="h-4 w-4" /> Template</TabsTrigger>
           <TabsTrigger value="history" className="gap-2"><History className="h-4 w-4" /> Riwayat</TabsTrigger>
         </TabsList>
 
+        {canCreate && (
+          <>
         {/* ── Send Tab ── */}
         <TabsContent value="send" className="space-y-4">
           <Card>
@@ -368,13 +378,17 @@ export function NotificationsPage() {
             </CardContent>
           </Card>
         </TabsContent>
+          </>
+        )}
 
         {/* ── Templates Tab ── */}
         <TabsContent value="templates" className="space-y-4">
           <div className="flex justify-end">
-            <Button onClick={() => { setEditingTemplate(null); setTemplateForm({ name: '', type: 'GENERAL', subject: '', message: '' }); setTemplateDialogOpen(true); }} className="gap-2">
-              <Plus className="h-4 w-4" /> Tambah Template
-            </Button>
+            <Can permission="notifications.create">
+              <Button onClick={() => { setEditingTemplate(null); setTemplateForm({ name: '', type: 'GENERAL', subject: '', message: '' }); setTemplateDialogOpen(true); }} className="gap-2">
+                <Plus className="h-4 w-4" /> Tambah Template
+              </Button>
+            </Can>
           </div>
           {templates.map((t: any) => (
             <Card key={t.id}>
@@ -394,12 +408,16 @@ export function NotificationsPage() {
                       {t.isActive ? 'Aktif' : 'Nonaktif'}
                     </Badge>
                     <span className="text-xs text-muted-foreground">{t._count?.logs || 0} terkirim</span>
-                    <Button size="sm" variant="ghost" onClick={() => {
-                      setEditingTemplate(t);
-                      setTemplateForm({ name: t.name, type: t.type, subject: t.subject, message: t.message });
-                      setTemplateDialogOpen(true);
-                    }}><Edit size={14} /></Button>
-                    <Button size="sm" variant="ghost" className="text-destructive" onClick={() => deleteTemplateMutation.mutate(t.id)}><Trash2 size={14} /></Button>
+                    <Can permission="notifications.update">
+                      <Button size="sm" variant="ghost" onClick={() => {
+                        setEditingTemplate(t);
+                        setTemplateForm({ name: t.name, type: t.type, subject: t.subject, message: t.message });
+                        setTemplateDialogOpen(true);
+                      }}><Edit size={14} /></Button>
+                    </Can>
+                    <Can permission="notifications.delete">
+                      <Button size="sm" variant="ghost" className="text-destructive" onClick={() => deleteTemplateMutation.mutate(t.id)}><Trash2 size={14} /></Button>
+                    </Can>
                   </div>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground whitespace-pre-wrap line-clamp-2">{t.message}</p>
@@ -482,9 +500,11 @@ export function NotificationsPage() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Button size="sm" variant="ghost" onClick={() => deleteLogMutation.mutate(log.id)}>
-                            <Trash2 size={12} />
-                          </Button>
+                          <Can permission="notifications.delete">
+                            <Button size="sm" variant="ghost" onClick={() => deleteLogMutation.mutate(log.id)}>
+                              <Trash2 size={12} />
+                            </Button>
+                          </Can>
                         </TableCell>
                       </TableRow>
                     ))

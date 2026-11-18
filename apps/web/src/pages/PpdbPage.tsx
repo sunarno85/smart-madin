@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Eye, Search, UserCheck, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDateShort } from '../lib/utils';
+import { Can } from '../components/Can';
 
 const STATUS_LABEL: Record<string, string> = {
   BARU: 'Baru',
@@ -289,6 +290,7 @@ export function PpdbPage() {
                     />
                   </div>
                   <DialogFooter className="flex-wrap gap-2 sm:justify-between">
+                    <Can permission="ppdb.update">
                     <div className="flex flex-wrap gap-2">
                       {detail.status === 'BARU' && (
                         <Button
@@ -327,11 +329,14 @@ export function PpdbPage() {
                         </Button>
                       )}
                     </div>
+                    </Can>
+                    <Can permission="ppdb.update">
                     {(detail.status === 'ACCEPTED' || detail.status === 'VERIFIED' || detail.status === 'WAITLISTED') && (
                       <Button onClick={() => setEnrollConfirm(detail)} disabled={enrollMutation.isPending}>
                         <UserPlus className="mr-1 h-4 w-4" /> Jadikan Santri
                       </Button>
                     )}
+                    </Can>
                   </DialogFooter>
                 </>
               )}

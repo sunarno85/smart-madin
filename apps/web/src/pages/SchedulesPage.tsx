@@ -10,6 +10,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { PrintHeader, PrintFooter } from '../components/PrintHeader';
 import { Plus, Edit, Trash2, Clock, User, BookOpen, Printer } from 'lucide-react';
+import { Can } from '../components/Can';
 
 const DAYS = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 const DAY_COLORS = [
@@ -251,7 +252,9 @@ export function SchedulesPage() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => window.print()} className="gap-2"><Printer className="h-4 w-4" /> Cetak</Button>
-          <Button onClick={openCreate} className="gap-2"><Plus className="h-4 w-4" /> Tambah Jadwal</Button>
+          <Can permission="schedules.create">
+            <Button onClick={openCreate} className="gap-2"><Plus className="h-4 w-4" /> Tambah Jadwal</Button>
+          </Can>
         </div>
       </div>
 
@@ -360,12 +363,16 @@ export function SchedulesPage() {
                           <Badge variant="secondary" className="shrink-0 hidden lg:inline-flex print:inline-flex print:border-green-200 print:text-green-800 print:text-[10px]">{s.room}</Badge>
                         )}
                         <div className="flex gap-1 shrink-0 print:hidden">
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(s)}>
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => { setDeletingSchedule(s); setDeleteDialogOpen(true); }}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <Can permission="schedules.update">
+                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(s)}>
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </Can>
+                          <Can permission="schedules.delete">
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => { setDeletingSchedule(s); setDeleteDialogOpen(true); }}>
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </Can>
                         </div>
                       </div>
                     ))}

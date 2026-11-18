@@ -17,6 +17,7 @@ import {
   Plus, CheckCircle2, XCircle, AlertCircle, MinusCircle, Calendar,
   QrCode, Clock, Users, Search, RefreshCw, Printer, X, ChevronDown, ChevronUp,
 } from 'lucide-react';
+import { Can, useCan } from '../components/Can';
 
 const STATUS_ICONS: Record<string, React.ReactNode> = {
   PRESENT: <CheckCircle2 size={18} className="text-green-600" />,
@@ -48,6 +49,7 @@ const STATUS_BG: Record<string, string> = {
 
 export function AttendancePage() {
   const queryClient = useQueryClient();
+  const canUpdate = useCan('attendance.update');
   const [openCreate, setOpenCreate] = useState(false);
   const [activeSession, setActiveSession] = useState<string | null>(null);
   const [showQR, setShowQR] = useState(false);
@@ -215,6 +217,7 @@ export function AttendancePage() {
           <h1 className="text-2xl font-bold">Presensi</h1>
           <p className="text-muted-foreground">Manajemen kehadiran santri secara real-time</p>
         </div>
+        <Can permission="attendance.create">
         <Dialog open={openCreate} onOpenChange={setOpenCreate}>
           <DialogTrigger asChild>
             <Button><Plus className="mr-2 h-4 w-4" />Buat Sesi Presensi</Button>
@@ -274,6 +277,7 @@ export function AttendancePage() {
             </form>
           </DialogContent>
         </Dialog>
+        </Can>
       </div>
 
       {/* ── Stats Cards ── */}
@@ -384,12 +388,14 @@ export function AttendancePage() {
                         {showQR ? <X size={14} /> : <QrCode size={14} />}
                         {showQR ? 'Tutup QR' : 'QR Code'}
                       </Button>
-                      <Button size="sm" variant="outline" onClick={handleMarkAllPresent} disabled={bulkUpdateMutation.isPending}>
-                        <CheckCircle2 className="mr-1 h-4 w-4" /> Semua Hadir
-                      </Button>
-                      <Button size="sm" variant="destructive" onClick={handleMarkAllAbsent} disabled={bulkUpdateMutation.isPending}>
-                        <XCircle className="mr-1 h-4 w-4" /> Semua Alpa
-                      </Button>
+                      <Can permission="attendance.update">
+                        <Button size="sm" variant="outline" onClick={handleMarkAllPresent} disabled={bulkUpdateMutation.isPending}>
+                          <CheckCircle2 className="mr-1 h-4 w-4" /> Semua Hadir
+                        </Button>
+                        <Button size="sm" variant="destructive" onClick={handleMarkAllAbsent} disabled={bulkUpdateMutation.isPending}>
+                          <XCircle className="mr-1 h-4 w-4" /> Semua Alpa
+                        </Button>
+                      </Can>
                     </div>
                   </div>
 
@@ -471,9 +477,11 @@ export function AttendancePage() {
                       />
                     </div>
                     {searchQuery && (
-                      <Button size="sm" variant="outline" onClick={handleSearchMarkPresent} disabled={bulkUpdateMutation.isPending}>
-                        <CheckCircle2 size={14} className="mr-1" /> Tandai Hadir
-                      </Button>
+                      <Can permission="attendance.update">
+                        <Button size="sm" variant="outline" onClick={handleSearchMarkPresent} disabled={bulkUpdateMutation.isPending}>
+                          <CheckCircle2 size={14} className="mr-1" /> Tandai Hadir
+                        </Button>
+                      </Can>
                     )}
                     <Button
                       size="sm"
@@ -503,17 +511,17 @@ export function AttendancePage() {
                   {filteredRecords.map((rec: any) => (
                     <div
                       key={rec.id}
-                      className={`rounded-lg border-2 p-3 cursor-pointer transition-all duration-200 ${STATUS_BG[rec.status]} ${
+                      className={`rounded-lg border-2 p-3 transition-all duration-200 ${canUpdate ? 'cursor-pointer' : ''} ${STATUS_BG[rec.status]} ${
                         rec.status === 'PRESENT' ? 'ring-1 ring-green-300' :
                         rec.status === 'SICK' ? 'ring-1 ring-yellow-300' :
                         rec.status === 'PERMISSION' ? 'ring-1 ring-blue-300' :
                         'ring-1 ring-red-200'
                       }`}
-                      onClick={() => updateRecordMutation.mutate({
+                      onClick={canUpdate ? () => updateRecordMutation.mutate({
                         sessionId: sessionDetail.id,
                         studentId: rec.studentId,
                         status: 'PRESENT',
-                      })}
+                      }) : undefined}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center text-xs font-bold text-primary">
@@ -530,6 +538,7 @@ export function AttendancePage() {
                         {(['PRESENT', 'SICK', 'PERMISSION', 'ABSENT'] as const).map((status) => (
                           <button
                             key={status}
+                            disabled={!canUpdate}
                             onClick={(e) => {
                               e.stopPropagation();
                               updateRecordMutation.mutate({
@@ -577,6 +586,7 @@ export function AttendancePage() {
                                 {(['PRESENT', 'SICK', 'PERMISSION', 'ABSENT'] as const).map((status) => (
                                   <button
                                     key={status}
+                                    disabled={!canUpdate}
                                     onClick={() => updateRecordMutation.mutate({
                                       sessionId: sessionDetail.id,
                                       studentId: rec.studentId,

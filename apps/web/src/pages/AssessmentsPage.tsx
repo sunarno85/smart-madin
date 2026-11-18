@@ -16,6 +16,7 @@ import {
   Plus, Save, BarChart3, Users, BookOpen, Award, FileText, Trash2, Edit,
   CheckCircle2, Calculator, GraduationCap, ClipboardCheck, TrendingUp,
 } from 'lucide-react';
+import { Can, useCan } from '../components/Can';
 
 const GRADE_COLORS: Record<string, string> = {
   A: 'bg-green-100 text-green-800',
@@ -27,6 +28,8 @@ const GRADE_COLORS: Record<string, string> = {
 
 export function AssessmentsPage() {
   const queryClient = useQueryClient();
+  const canCreate = useCan('assessments.create');
+  const canUpdate = useCan('assessments.update');
   const [activeTab, setActiveTab] = useState('list');
 
   // ── Create Assessment ──
@@ -249,14 +252,16 @@ export function AssessmentsPage() {
           <h1 className="text-2xl font-bold">Penilaian & Rubrik</h1>
           <p className="text-muted-foreground">Manajemen penilaian, rubrik, dan rekap nilai</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setRubricDialogOpen(true)} className="gap-2">
-            <ClipboardCheck className="h-4 w-4" /> Template Rubrik
-          </Button>
-          <Button onClick={() => setCreateDialogOpen(true)} className="gap-2">
-            <Plus className="h-4 w-4" /> Tambah Penilaian
-          </Button>
-        </div>
+        <Can permission="assessments.create">
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setRubricDialogOpen(true)} className="gap-2">
+              <ClipboardCheck className="h-4 w-4" /> Template Rubrik
+            </Button>
+            <Button onClick={() => setCreateDialogOpen(true)} className="gap-2">
+              <Plus className="h-4 w-4" /> Tambah Penilaian
+            </Button>
+          </div>
+        </Can>
       </div>
 
       {/* Stats */}
@@ -282,9 +287,11 @@ export function AssessmentsPage() {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className={`grid w-full ${canUpdate ? 'grid-cols-4' : 'grid-cols-3'}`}>
           <TabsTrigger value="list" className="gap-2"><FileText className="h-4 w-4" /> Daftar</TabsTrigger>
-          <TabsTrigger value="scoring" className="gap-2"><CheckCircle2 className="h-4 w-4" /> Input Nilai</TabsTrigger>
+          {canUpdate && (
+            <TabsTrigger value="scoring" className="gap-2"><CheckCircle2 className="h-4 w-4" /> Input Nilai</TabsTrigger>
+          )}
           <TabsTrigger value="recap" className="gap-2"><BarChart3 className="h-4 w-4" /> Rekap</TabsTrigger>
           <TabsTrigger value="gpa" className="gap-2"><GraduationCap className="h-4 w-4" /> GPA</TabsTrigger>
         </TabsList>
@@ -340,9 +347,11 @@ export function AssessmentsPage() {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-center">
-                          <Button size="sm" variant="ghost" onClick={() => { handleSelectAssessment(a.id); setActiveTab('scoring'); }}>
-                            <CheckCircle2 size={14} className="mr-1" /> Input
-                          </Button>
+                          <Can permission="assessments.update">
+                            <Button size="sm" variant="ghost" onClick={() => { handleSelectAssessment(a.id); setActiveTab('scoring'); }}>
+                              <CheckCircle2 size={14} className="mr-1" /> Input
+                            </Button>
+                          </Can>
                         </TableCell>
                       </TableRow>
                     ))
@@ -380,9 +389,11 @@ export function AssessmentsPage() {
                         {assessmentDetail.class?.name} • {assessmentDetail.subject?.name} • Max: {assessmentDetail.maxScore}
                       </p>
                     </div>
-                    <Button onClick={handleBatchScore} disabled={bulkScoreMutation.isPending} className="gap-2">
-                      <Save className="h-4 w-4" /> {bulkScoreMutation.isPending ? 'Menyimpan...' : 'Simpan Semua'}
-                    </Button>
+                    <Can permission="assessments.update">
+                      <Button onClick={handleBatchScore} disabled={bulkScoreMutation.isPending} className="gap-2">
+                        <Save className="h-4 w-4" /> {bulkScoreMutation.isPending ? 'Menyimpan...' : 'Simpan Semua'}
+                      </Button>
+                    </Can>
                   </div>
 
                   <div className="overflow-auto">
@@ -416,6 +427,7 @@ export function AssessmentsPage() {
                             <TableCell className="text-center">
                               <Input
                                 type="number"
+                                disabled={!canUpdate}
                                 min={0}
                                 max={assessmentDetail.maxScore}
                                 placeholder={rec.score !== null ? String(rec.score) : '—'}
@@ -689,9 +701,11 @@ export function AssessmentsPage() {
                     </div>
                     <div className="flex gap-2">
                       <Badge variant={r.isActive ? 'default' : 'secondary'}>{r.isActive ? 'Aktif' : 'Nonaktif'}</Badge>
-                      <Button size="sm" variant="ghost" className="text-destructive" onClick={() => deleteRubricMutation.mutate(r.id)}>
-                        <Trash2 size={12} />
-                      </Button>
+                      <Can permission="assessments.delete">
+                        <Button size="sm" variant="ghost" className="text-destructive" onClick={() => deleteRubricMutation.mutate(r.id)}>
+                          <Trash2 size={12} />
+                        </Button>
+                      </Can>
                     </div>
                   </div>
                   {r.criteria?.length > 0 && (

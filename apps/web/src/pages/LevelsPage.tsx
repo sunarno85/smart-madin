@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Can } from '../components/Can';
 import { toast } from 'sonner';
 
 export function LevelsPage() {
@@ -66,7 +67,9 @@ export function LevelsPage() {
           <h1 className="text-2xl font-bold">Jenjang</h1>
           <p className="text-muted-foreground">Tingkatan jenjang pendidikan</p>
         </div>
-        <Button onClick={() => { setForm(emptyForm); setOpenCreate(true); }}><Plus className="mr-2 h-4 w-4" />Tambah Jenjang</Button>
+        <Can permission="levels.create">
+          <Button onClick={() => { setForm(emptyForm); setOpenCreate(true); }}><Plus className="mr-2 h-4 w-4" />Tambah Jenjang</Button>
+        </Can>
       </div>
 
       <Card>
@@ -106,8 +109,12 @@ export function LevelsPage() {
                     <TableCell className="text-center">{level.classes?.length || 0}</TableCell>
                     <TableCell className="text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(level)}><Edit size={14} /></Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setOpenDelete(level)}><Trash2 size={14} /></Button>
+                        <Can permission="levels.update">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(level)}><Edit size={14} /></Button>
+                        </Can>
+                        <Can permission="levels.delete">
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setOpenDelete(level)}><Trash2 size={14} /></Button>
+                        </Can>
                       </div>
                     </TableCell>
                   </TableRow>

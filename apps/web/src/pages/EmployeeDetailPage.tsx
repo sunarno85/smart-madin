@@ -11,6 +11,7 @@ import { ArrowLeft, Printer, Camera, User, Upload, X } from 'lucide-react';
 import { PrintHeader, PrintFooter } from '../components/PrintHeader';
 import { toast } from 'sonner';
 import { formatGender, formatStatus, getStatusColor } from '../lib/utils';
+import { useCan } from '../components/Can';
 
 const UPLOAD_BASE = api.defaults.baseURL?.replace('/api', '') || '';
 
@@ -18,6 +19,7 @@ export function EmployeeDetailPage() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const canUpdate = useCan('employees.update');
 
   const { data: employee, isLoading } = useQuery({
     queryKey: ['employee', id],
@@ -113,15 +115,17 @@ export function EmployeeDetailPage() {
                 )}
               </div>
               {/* Upload overlay — hidden on print */}
-              <button
-                className="print:hidden absolute inset-0 flex flex-col items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Camera className="h-6 w-6 text-white mb-1" />
-                <span className="text-[10px] text-white font-medium">
-                  {photoUploadMutation.isPending ? 'Uploading...' : 'Ubah Foto'}
-                </span>
-              </button>
+              {canUpdate && (
+                <button
+                  className="print:hidden absolute inset-0 flex flex-col items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Camera className="h-6 w-6 text-white mb-1" />
+                  <span className="text-[10px] text-white font-medium">
+                    {photoUploadMutation.isPending ? 'Uploading...' : 'Ubah Foto'}
+                  </span>
+                </button>
+              )}
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
               {/* Print-only photo label */}
               <div className="hidden print:block text-center mt-1">

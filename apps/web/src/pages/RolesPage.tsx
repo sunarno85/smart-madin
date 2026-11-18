@@ -10,6 +10,7 @@ import {
 } from '../components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Plus, Shield, Edit, Trash2, CheckCircle2, XCircle, RotateCcw } from 'lucide-react';
+import { Can } from '../components/Can';
 
 const MODULE_LABELS: Record<string, string> = {
   students: 'Santri',
@@ -166,6 +167,7 @@ export function RolesPage() {
           <h1 className="text-2xl font-bold">Role & Permission</h1>
           <p className="text-muted-foreground">Kelola role dan hak akses pengguna</p>
         </div>
+        <Can permission="roles.create">
         <Dialog open={openCreate} onOpenChange={setOpenCreate}>
           <DialogTrigger asChild>
             <Button><Plus className="mr-2 h-4 w-4" />Tambah Role</Button>
@@ -188,6 +190,7 @@ export function RolesPage() {
             </form>
           </DialogContent>
         </Dialog>
+        </Can>
       </div>
 
       {/* Roles Table */}
@@ -247,20 +250,26 @@ export function RolesPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="icon" className="h-8 w-8" title="Edit Permissions" onClick={() => handleOpenPermissions(role.id)}>
-                          <Shield size={16} />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" title="Reset ke Default" onClick={() => resetPermissionsMutation.mutate(role.id)} disabled={resetPermissionsMutation.isPending}>
-                          <RotateCcw size={14} />
-                        </Button>
+                        <Can permission="roles.manage">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" title="Edit Permissions" onClick={() => handleOpenPermissions(role.id)}>
+                            <Shield size={16} />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" title="Reset ke Default" onClick={() => resetPermissionsMutation.mutate(role.id)} disabled={resetPermissionsMutation.isPending}>
+                            <RotateCcw size={14} />
+                          </Button>
+                        </Can>
                         {!role.isSystem && (
                           <>
-                            <Button variant="ghost" size="icon" className="h-8 w-8" title="Edit" onClick={() => { setEditForm({ name: role.name, description: role.description || '' }); setOpenEdit(role.id); }}>
-                              <Edit size={16} />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" title="Hapus" onClick={() => setOpenDelete(role.id)}>
-                              <Trash2 size={16} />
-                            </Button>
+                            <Can permission="roles.update">
+                              <Button variant="ghost" size="icon" className="h-8 w-8" title="Edit" onClick={() => { setEditForm({ name: role.name, description: role.description || '' }); setOpenEdit(role.id); }}>
+                                <Edit size={16} />
+                              </Button>
+                            </Can>
+                            <Can permission="roles.delete">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" title="Hapus" onClick={() => setOpenDelete(role.id)}>
+                                <Trash2 size={16} />
+                              </Button>
+                            </Can>
                           </>
                         )}
                       </div>

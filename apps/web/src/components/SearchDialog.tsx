@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import { Search, Users, GraduationCap, BookOpen, Calendar, ClipboardList, BarChart3, Settings, ArrowRight, ClipboardCheck, FileUp } from 'lucide-react';
 
 interface SearchResult {
@@ -11,6 +12,8 @@ interface SearchResult {
   icon: React.ReactNode;
   url: string;
   category: string;
+  /** Halaman hanya muncul bila pengguna memiliki permission ini. */
+  permission: string;
 }
 
 interface SearchDialogProps {
@@ -22,6 +25,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const { hasPermission } = useAuth();
 
   useEffect(() => {
     if (open) {
@@ -49,27 +53,27 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
   const { data: students } = useQuery({
     queryKey: ['search-students', query],
     queryFn: () => api.get(`/students?limit=10&search=${encodeURIComponent(query)}`).then((r) => r.data),
-    enabled: open && query.length >= 2,
+    enabled: open && query.length >= 2 && hasPermission('students.read'),
   });
 
   // Search employees
   const { data: employees } = useQuery({
     queryKey: ['search-employees', query],
     queryFn: () => api.get(`/employees?limit=10&search=${encodeURIComponent(query)}`).then((r) => r.data),
-    enabled: open && query.length >= 2,
+    enabled: open && query.length >= 2 && hasPermission('employees.read'),
   });
 
   const staticPages: SearchResult[] = [
-    { id: 'dashboard', title: 'Dashboard', subtitle: 'Ringkasan data', icon: <BarChart3 size={16} />, url: '/dashboard', category: 'Halaman' },
-    { id: 'jadwal', title: 'Jadwal Pelajaran', subtitle: 'Manajemen jadwal', icon: <Calendar size={16} />, url: '/schedules', category: 'Akademik' },
-    { id: 'presensi', title: 'Presensi', subtitle: 'Kehadiran santri', icon: <ClipboardCheck size={16} />, url: '/attendance', category: 'Akademik' },
-    { id: 'penilaian', title: 'Penilaian', subtitle: 'Input & rekap nilai', icon: <ClipboardList size={16} />, url: '/assessments', category: 'Akademik' },
-    { id: 'santri', title: 'Semua Santri', subtitle: 'Daftar santri', icon: <GraduationCap size={16} />, url: '/students', category: 'Data' },
-    { id: 'ptk', title: 'PTK & Tendik', subtitle: 'Data pegawai', icon: <Users size={16} />, url: '/employees', category: 'Data' },
-    { id: 'laporan-santri', title: 'Laporan Santri', subtitle: 'Statistik & rekap', icon: <BarChart3 size={16} />, url: '/reports/students', category: 'Laporan' },
-    { id: 'laporan-ptk', title: 'Laporan PTK', subtitle: 'Statistik pegawai', icon: <BarChart3 size={16} />, url: '/reports/employees', category: 'Laporan' },
-    { id: 'import', title: 'Import Excel', subtitle: 'Import data massal', icon: <FileUp size={16} />, url: '/import', category: 'Tools' },
-    { id: 'profil', title: 'Profil Madrasah', subtitle: 'Informasi lembaga', icon: <Settings size={16} />, url: '/school-profile', category: 'Pengaturan' },
+    { id: 'dashboard', title: 'Dashboard', subtitle: 'Ringkasan data', icon: <BarChart3 size={16} />, url: '/dashboard', category: 'Halaman', permission: 'dashboard.read' },
+    { id: 'jadwal', title: 'Jadwal Pelajaran', subtitle: 'Manajemen jadwal', icon: <Calendar size={16} />, url: '/schedules', category: 'Akademik', permission: 'schedules.read' },
+    { id: 'presensi', title: 'Presensi', subtitle: 'Kehadiran santri', icon: <ClipboardCheck size={16} />, url: '/attendance', category: 'Akademik', permission: 'attendance.read' },
+    { id: 'penilaian', title: 'Penilaian', subtitle: 'Input & rekap nilai', icon: <ClipboardList size={16} />, url: '/assessments', category: 'Akademik', permission: 'assessments.read' },
+    { id: 'santri', title: 'Semua Santri', subtitle: 'Daftar santri', icon: <GraduationCap size={16} />, url: '/students', category: 'Data', permission: 'students.read' },
+    { id: 'ptk', title: 'PTK & Tendik', subtitle: 'Data pegawai', icon: <Users size={16} />, url: '/employees', category: 'Data', permission: 'employees.read' },
+    { id: 'laporan-santri', title: 'Laporan Santri', subtitle: 'Statistik & rekap', icon: <BarChart3 size={16} />, url: '/reports/students', category: 'Laporan', permission: 'reports.read' },
+    { id: 'laporan-ptk', title: 'Laporan PTK', subtitle: 'Statistik pegawai', icon: <BarChart3 size={16} />, url: '/reports/employees', category: 'Laporan', permission: 'reports.read' },
+    { id: 'import', title: 'Import Excel', subtitle: 'Import data massal', icon: <FileUp size={16} />, url: '/imports', category: 'Tools', permission: 'imports.read' },
+    { id: 'profil', title: 'Profil Madrasah', subtitle: 'Informasi lembaga', icon: <Settings size={16} />, url: '/school-profile', category: 'Pengaturan', permission: 'settings.read' },
   ];
 
   // Build search results
@@ -87,6 +91,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
           icon: <GraduationCap size={16} className="text-blue-500" />,
           url: `/students/${s.id}`,
           category: 'Santri',
+          permission: 'students.read',
         });
       });
     }
@@ -102,6 +107,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
           icon: <Users size={16} className="text-green-500" />,
           url: `/employees/${e.id}`,
           category: 'PTK & Tendik',
+          permission: 'employees.read',
         });
       });
     }
@@ -110,8 +116,9 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
   // Filter static pages by query
   const filteredPages = query.length >= 1
     ? staticPages.filter(p =>
-        p.title.toLowerCase().includes(query.toLowerCase()) ||
-        p.subtitle.toLowerCase().includes(query.toLowerCase())
+        hasPermission(p.permission) &&
+        (p.title.toLowerCase().includes(query.toLowerCase()) ||
+          p.subtitle.toLowerCase().includes(query.toLowerCase()))
       )
     : [];
 

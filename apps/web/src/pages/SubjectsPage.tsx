@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Can } from '../components/Can';
 import { toast } from 'sonner';
 
 export function SubjectsPage() {
@@ -66,7 +67,9 @@ export function SubjectsPage() {
           <h1 className="text-2xl font-bold">Mata Pelajaran</h1>
           <p className="text-muted-foreground">Daftar mata pelajaran</p>
         </div>
-        <Button onClick={() => { setForm(emptyForm); setOpenCreate(true); }}><Plus className="mr-2 h-4 w-4" />Tambah Mata Pelajaran</Button>
+        <Can permission="subjects.create">
+          <Button onClick={() => { setForm(emptyForm); setOpenCreate(true); }}><Plus className="mr-2 h-4 w-4" />Tambah Mata Pelajaran</Button>
+        </Can>
       </div>
 
       <Card>
@@ -104,8 +107,12 @@ export function SubjectsPage() {
                     <TableCell>{subj.description || '-'}</TableCell>
                     <TableCell className="text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(subj)}><Edit size={14} /></Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setOpenDelete(subj)}><Trash2 size={14} /></Button>
+                        <Can permission="subjects.update">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(subj)}><Edit size={14} /></Button>
+                        </Can>
+                        <Can permission="subjects.delete">
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setOpenDelete(subj)}><Trash2 size={14} /></Button>
+                        </Can>
                       </div>
                     </TableCell>
                   </TableRow>

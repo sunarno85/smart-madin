@@ -10,6 +10,7 @@ import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { ArrowRight, Copy, GraduationCap, Repeat, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
+import { Can } from '../components/Can';
 
 type Action = 'PROMOTE' | 'REPEAT' | 'GRADUATE';
 
@@ -196,6 +197,7 @@ export function KenaikanKelasPage() {
       </Card>
 
       {previewEnabled && !targetYearHasClasses && (
+        <Can permission="promotion.manage">
         <Card className="border-amber-300 bg-amber-50">
           <CardContent className="flex flex-col items-start justify-between gap-3 p-4 sm:flex-row sm:items-center">
             <div>
@@ -210,6 +212,7 @@ export function KenaikanKelasPage() {
             </Button>
           </CardContent>
         </Card>
+        </Can>
       )}
 
       {preview && (
@@ -323,13 +326,15 @@ export function KenaikanKelasPage() {
                     </span>
                   )}
                 </div>
-                <Button
-                  onClick={() => setConfirmOpen(true)}
-                  disabled={executeMutation.isPending || invalidSelection}
-                >
-                  <ArrowRight className="mr-2 h-4 w-4" />
-                  Proses Kenaikan ({preview.students.length} santri)
-                </Button>
+                <Can permission="promotion.manage">
+                  <Button
+                    onClick={() => setConfirmOpen(true)}
+                    disabled={executeMutation.isPending || invalidSelection}
+                  >
+                    <ArrowRight className="mr-2 h-4 w-4" />
+                    Proses Kenaikan ({preview.students.length} santri)
+                  </Button>
+                </Can>
               </div>
             )}
           </CardContent>
