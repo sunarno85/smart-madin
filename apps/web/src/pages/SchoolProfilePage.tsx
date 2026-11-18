@@ -131,7 +131,7 @@ export function SchoolProfilePage() {
                 onChange={handleLogoChange}
               />
               <p className="text-[11px] text-muted-foreground text-center max-w-[160px]">
-                Format: JPG, PNG, GIF, SVG. Maksimal 5MB. Logo akan tampil di kop cetakan.
+                Format: JPG, PNG, GIF, SVG. Maksimal 5MB. Logo akan langsung tampil di sidebar, header, dan halaman login.
               </p>
             </div>
             <div className="flex-1 text-sm text-muted-foreground space-y-2">
@@ -139,7 +139,7 @@ export function SchoolProfilePage() {
               <ul className="list-disc list-inside space-y-1 text-[13px]">
                 <li>Gunakan resolusi minimal <strong>200×200 pixel</strong> agar cetakan tajam</li>
                 <li>Format <strong>PNG</strong> dengan background transparan direkomendasikan</li>
-                <li>Logo akan ditampilkan di <strong>kop surat / hasil cetak</strong> (Jadwal, Laporan, Biodata)</li>
+                <li>Logo akan ditampilkan di <strong>sidebar, header, halaman login</strong>, dan kop surat / hasil cetak</li>
                 <li>Ukuran tampil cetakan: ±48×48 pixel</li>
               </ul>
             </div>

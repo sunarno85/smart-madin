@@ -6,6 +6,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { AppLogo } from '../components/AppLogo';
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -37,9 +38,7 @@ export function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-bold text-xl">
-            SM
-          </div>
+          <AppLogo size={64} className="mx-auto mb-4 rounded-2xl" />
           <CardTitle className="text-2xl font-bold text-primary">
             SMART MADIN
           </CardTitle>

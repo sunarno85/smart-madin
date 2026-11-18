@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { SearchDialog } from '../components/SearchDialog';
+import { AppLogo } from '../components/AppLogo';
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, Calendar,
   ClipboardList, FileText, Settings, Shield, LogOut, Menu, X,
@@ -276,13 +277,11 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
         {/* Logo */}
         <div className="flex items-center justify-between border-b shrink-0" style={{ height: 64, padding: collapsed ? '0 8px' : '0 16px' }}>
           {collapsed ? (
-            <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">
-              SM
-            </div>
+            <AppLogo size={32} className="mx-auto rounded-lg" />
           ) : (
             <>
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">SM</div>
+                <AppLogo size={32} className="rounded-lg" />
                 <span className="font-bold text-primary">SMART MADIN</span>
               </div>
               <button onClick={() => setCollapsed(true)} className="rounded-lg p-2 hover:bg-accent" title="Collapse sidebar">
@@ -310,7 +309,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       <aside className={`fixed inset-y-0 left-0 z-50 flex flex-col w-72 bg-background transition-transform duration-300 md:hidden ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex h-16 items-center justify-between border-b px-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">SM</div>
+            <AppLogo size={32} className="rounded-lg" />
             <span className="font-bold text-primary">SMART MADIN</span>
           </div>
           <button onClick={() => setMobileSidebarOpen(false)} className="rounded-lg p-2 hover:bg-accent"><X size={20} /></button>
@@ -326,6 +325,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
             <button onClick={() => setMobileSidebarOpen(true)} className="rounded-lg p-2 hover:bg-accent md:hidden" aria-label="Open menu">
               <Menu size={20} />
             </button>
+            <AppLogo size={28} className="rounded-lg" />
             <h1 className="text-lg font-semibold truncate">SMART MADIN</h1>
           </div>
           <div className="flex items-center gap-2">

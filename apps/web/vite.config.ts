@@ -22,6 +22,21 @@ export default defineConfig({
       },
     },
   },
+  // `vite preview` memakai konfigurasi terpisah dari `server`.
+  // Proxy ini membuat /api dan /uploads tetap diarahkan ke API SMART MADIN.
+  preview: {
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+      '/uploads': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    },
+  },
   build: {
     chunkSizeWarningLimit: 700,
     rollupOptions: {
