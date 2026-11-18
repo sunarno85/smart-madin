@@ -175,6 +175,9 @@ if ($CheckOnly) {
 # --- 6. Jalankan -------------------------------------------------------------
 if ($Mode -eq 'Start') {
   Write-Step 'Build aplikasi'
+  # Hapus cache inkremental TypeScript: nest build dengan deleteOutDir bisa
+  # melewati emit bila tsbuildinfo menganggap output masih ada.
+  Remove-Item 'apps\api\tsconfig.build.tsbuildinfo' -Force -ErrorAction SilentlyContinue
   npm run build
   if ($LASTEXITCODE -ne 0) { throw "Build gagal (exit $LASTEXITCODE)" }
 
