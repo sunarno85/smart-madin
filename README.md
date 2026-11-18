@@ -6,9 +6,94 @@ Aplikasi web manajemen administrasi Madrasah Diniyah (single-tenant) untuk **Mad
 
 **Repository GitHub (private):** https://github.com/sunarno85/smart-madin.git
 
-Cara instalasi dari GitHub langsung ke komputer: lihat **[INSTALL.md](INSTALL.md)**.
+## Cara instalasi dari GitHub langsung ke komputer
 
-Launcher Windows: `install.cmd` (install semua dependency + database) lalu `run.cmd` (jalankan aplikasi). Cek kesiapan dengan `run.cmd -CheckOnly`.
+Panduan lengkap beserta troubleshooting ada di **[INSTALL.md](INSTALL.md)**. Ringkasannya sebagai berikut.
+
+### 1. Pasang prasyarat
+
+- **Node.js 20 LTS** → https://nodejs.org
+- **Git** → https://git-scm.com/download/win
+- **PostgreSQL 14+** → https://www.postgresql.org/download/windows/
+
+Buat user dan database PostgreSQL:
+
+```sql
+CREATE USER smartmadin WITH PASSWORD 'smartmadin';
+CREATE DATABASE smartmadin OWNER smartmadin;
+```
+
+### 2. Clone repository private
+
+```powershell
+cd $HOME
+git clone https://github.com/sunarno85/smart-madin.git
+cd smart-madin
+```
+
+Saat diminta kredensial GitHub:
+
+- Username: `sunarno85`
+- Password: **Personal Access Token (PAT)** dengan scope `repo`, atau Git Credential Manager
+
+### 3. Install otomatis (Windows)
+
+```powershell
+.\install.cmd
+```
+
+`install.cmd` akan otomatis:
+
+1. Memeriksa Node.js/npm (minimal Node 18, disarankan 20 LTS).
+2. Membuat `.env` dari `.env.example` bila belum ada.
+3. Menjalankan `npm install` untuk **semua dependency** workspace API + web.
+4. Menjalankan `prisma generate` dan `prisma migrate deploy`.
+5. Menjalankan `seed` dan `sync:permissions` (100 permission untuk 6 role).
+6. Menanyakan apakah ingin mengimpor `Aplikasi Data Madin.xlsx`.
+
+Untuk non-interaktif: `.\install.cmd -Yes`. Lewati impor dengan `.\install.cmd -SkipImport`.
+
+### 4. Jalankan aplikasi
+
+```powershell
+.\run.cmd
+```
+
+`run.cmd` mengecek Node.js, `.env`, dependency npm, Prisma Client, dan koneksi PostgreSQL. Jika dependency belum ada, ia menjalankan `npm install`/`prisma generate` otomatis sebelum start.
+
+Opsi lain:
+
+```powershell
+.\run.cmd -CheckOnly     # hanya cek kesiapan, tidak menjalankan aplikasi
+.\run.cmd -Mode Start    # build production lalu jalankan API + web preview
+```
+
+Alternatif lewat npm: `npm run install:full` lalu `npm run launch`.
+
+### 5. Buka aplikasi
+
+- Web: `http://localhost:5173`
+- API: `http://localhost:3000/api`
+- Swagger: `http://localhost:3000/api/docs`
+
+Login awal: `admin` / `admin123` atau `headmaster` / `admin123`.
+
+### 6. Verifikasi
+
+```bash
+npm run build
+npm run test:e2e:api     # 11 test passed
+```
+
+### 7. Update aplikasi
+
+```powershell
+cd $HOME\smart-madin
+git pull origin main
+.\run.cmd
+```
+
+> PostgreSQL tetap perlu terpasang dan berjalan sebelum instalasi. GitLab/GitHub Actions tidak diperlukan.
 
 ## Tech Stack
 
