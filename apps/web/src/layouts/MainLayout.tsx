@@ -222,7 +222,7 @@ function SidebarContent({
 }
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const {
     theme,
     setTheme,
@@ -273,8 +273,8 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
 
   const handleLogout = async () => {
     setProfileDropdownOpen(false);
-    await useAuth().logout();
-    navigate('/login');
+    await logout();
+    navigate('/login', { replace: true });
   };
 
   const userInitial = user?.fullName?.charAt(0) || 'A';
