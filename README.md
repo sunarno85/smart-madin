@@ -8,6 +8,8 @@ Aplikasi web manajemen administrasi Madrasah Diniyah (single-tenant) untuk **Mad
 
 Cara instalasi dari GitHub langsung ke komputer: lihat **[INSTALL.md](INSTALL.md)**.
 
+Launcher Windows: `install.cmd` (install semua dependency + database) lalu `run.cmd` (jalankan aplikasi). Cek kesiapan dengan `run.cmd -CheckOnly`.
+
 ## Tech Stack
 
 ### Frontend

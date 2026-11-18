@@ -19,6 +19,8 @@ Saat install PostgreSQL, simpan password user `postgres`. Kita akan membuat user
 
 > Karena repo private, `git clone` akan meminta login GitHub. Gunakan Git Credential Manager saat diminta, atau Personal Access Token (PAT) sebagai password. PAT perlu scope `repo`.
 
+> **Launcher tersedia:** `install.cmd` memasang semua dependency npm dan menyiapkan database. `run.cmd` mengecek dependency lalu menjalankan aplikasi. Keduanya otomatis menginstall ulang dependency bila `node_modules` belum ada atau `package-lock.json` berubah.
+
 ## 2. Clone repository
 
 Buka **PowerShell** / **Git Bash**, lalu:
@@ -33,6 +35,47 @@ Jika diminta kredensial GitHub:
 
 - Username: `sunarno85`
 - Password: PAT GitHub Anda (bukan password akun)
+
+## 2a. Cara tercepat: installer + launcher (Windows)
+
+Dari folder `smart-madin`:
+
+```powershell
+.\install.cmd
+```
+
+`install.cmd` akan otomatis:
+
+1. Memeriksa Node.js/npm (minimal Node 18, disarankan 20 LTS).
+2. Membuat `.env` dari `.env.example` bila belum ada.
+3. Menjalankan `npm install` untuk **semua dependency** workspace API + web.
+4. Menjalankan `prisma generate` dan `prisma migrate deploy`.
+5. Menjalankan `seed` dan `sync:permissions`.
+6. Menanyakan apakah ingin mengimpor `Aplikasi Data Madin.xlsx`.
+
+Lalu jalankan:
+
+```powershell
+.\run.cmd
+```
+
+`run.cmd` akan mengecek Node.js, `.env`, dependency npm, Prisma Client, dan koneksi PostgreSQL. Jika dependency belum ada, ia menjalankan `npm install`/`prisma generate` otomatis sebelum start.
+
+Opsi launcher:
+
+```powershell
+.\run.cmd -CheckOnly        # hanya cek kesiapan, tidak menjalankan aplikasi
+.\run.cmd -Mode Start       # build production lalu jalankan API + web preview
+```
+
+Alternatif lewat npm:
+
+```bash
+npm run install:full
+npm run launch
+```
+
+> PostgreSQL tetap perlu terpasang dan berjalan sebelum `install.cmd` dijalankan. Launcher tidak menginstall PostgreSQL secara otomatis karena memerlukan hak administrator; panduannya ada di langkah berikutnya.
 
 ## 3. Siapkan PostgreSQL
 
@@ -63,7 +106,9 @@ APP_URL=http://localhost:5173
 API_PORT=3000
 ```
 
-## 5. Install dependensi & database
+## 5. Install dependensi & database (cara manual)
+
+> Jika sudah menjalankan `install.cmd`, langkah ini **tidak perlu diulang**. Ini hanya alternatif manual.
 
 Masih di folder `smart-madin`:
 
@@ -99,6 +144,14 @@ npm run import:madin -- --replace --file="C:\Path\Ke\Data.xlsx"
 ```
 
 ## 7. Jalankan aplikasi
+
+Cara paling mudah:
+
+```powershell
+.\run.cmd
+```
+
+Atau manual:
 
 ```bash
 npm run dev
