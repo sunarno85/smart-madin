@@ -20,6 +20,8 @@ export function AppLogo({ size = 32, className }: AppLogoProps) {
     queryKey: ['school-profile'],
     queryFn: () => api.get('/school/profile').then((r) => r.data),
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 
   const logo = profile?.logo as string | undefined;

@@ -27,7 +27,8 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // If 401 and not already retrying
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const isAuthRequest = originalRequest.url?.includes('/auth/');
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthRequest) {
       originalRequest._retry = true;
 
       try {
@@ -49,7 +50,13 @@ api.interceptors.response.use(
       } catch {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        delete api.defaults.headers.common['Authorization'];
+        // Jangan redirect bila sudah berada di halaman publik; mencegah
+        // loop refresh saat halaman login memuat data profil madrasah.
+        const publicPaths = ['/login', '/pendaftaran'];
+        if (!publicPaths.some((p) => window.location.pathname.startsWith(p))) {
+          window.location.href = '/login';
+        }
         return Promise.reject(error);
       }
     }

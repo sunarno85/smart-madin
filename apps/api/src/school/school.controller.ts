@@ -13,6 +13,7 @@ import { extname } from 'path';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { RequirePermissions } from '../common/decorators/require-permissions.decorator';
 import { AuthenticatedOnly } from '../common/decorators/authenticated.decorator';
+import { Public } from '../common/decorators/public.decorator';
 import { SchoolService } from './school.service';
 import { UpdateSchoolDto } from './dto/update-school.dto';
 
@@ -22,8 +23,9 @@ import { UpdateSchoolDto } from './dto/update-school.dto';
 export class SchoolController {
   constructor(private schoolService: SchoolService) {}
 
-  // Profil madrasah dipakai semua halaman (header cetak), cukup login.
-  @AuthenticatedOnly()
+  // Profil madrasah dipakai halaman login, sidebar, header, dan kop cetak.
+  // Bersifat publik agar halaman login tidak memicu 401 → redirect berulang.
+  @Public()
   @Get('profile')
   @ApiOperation({ summary: 'Get school profile' })
   async getProfile() {
