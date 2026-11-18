@@ -97,7 +97,7 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-background to-blue-100 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-6xl overflow-hidden rounded-2xl border bg-background shadow-xl lg:grid-cols-[1.1fr_1fr]">
         {/* ── Panel informasi madrasah ── */}
         <div className="hidden flex-col justify-between bg-gradient-to-br from-primary/15 via-primary/5 to-transparent p-10 lg:flex">

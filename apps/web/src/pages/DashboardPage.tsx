@@ -95,7 +95,7 @@ export function DashboardPage() {
                 <p className="text-sm font-medium text-muted-foreground">Total Santri</p>
                 <p className="text-2xl font-bold">{stats?.totalStudents || 0}</p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <GraduationCap size={24} />
               </div>
             </div>

@@ -86,7 +86,7 @@ export function PendaftaranPage() {
 
   if (result) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-50 to-blue-50 p-4">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-primary/5 p-4">
         <Card className="w-full max-w-lg text-center shadow-lg">
           <CardContent className="space-y-4 p-8">
             <CheckCircle2 className="mx-auto h-14 w-14 text-green-500" />
@@ -114,7 +114,7 @@ export function PendaftaranPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 py-10">
+    <div className="min-h-screen bg-gradient-to-br from-background to-primary/5 py-10">
       <div className="mx-auto w-full max-w-2xl space-y-6 px-4">
         {/* Header */}
         <div className="text-center">

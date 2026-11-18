@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { useTheme } from '../contexts/ThemeContext';
+import { ACCENT_OPTIONS, useTheme } from '../contexts/ThemeContext';
 import { SearchDialog } from '../components/SearchDialog';
 import { AppLogo } from '../components/AppLogo';
 import {
@@ -10,7 +10,7 @@ import {
   School, ChevronDown, ChevronRight, Search, Bell,
   UserCheck, ClipboardCheck, BarChart3, FileUp,
   User, LogOut as LogOutIcon, ChevronLeft,
-  Sun, Moon, Monitor, TrendingUp, UserPlus, Info,
+  Sun, Moon, Monitor, TrendingUp, UserPlus, Info, Palette, Check,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -223,7 +223,15 @@ function SidebarContent({
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const {
+    theme,
+    setTheme,
+    resolvedTheme,
+    accent,
+    setAccent,
+    customColor,
+    setCustomColor,
+  } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -236,7 +244,9 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
     'Sistem': false,
   });
   const [searchOpen, setSearchOpen] = useState(false);
+  const [accentPickerOpen, setAccentPickerOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const accentRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -248,6 +258,9 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
     const handleClick = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setProfileDropdownOpen(false);
+      }
+      if (accentRef.current && !accentRef.current.contains(e.target as Node)) {
+        setAccentPickerOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClick);
@@ -268,7 +281,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
   const userRole = user?.roles?.[0]?.replace(/_/g, ' ') || 'User';
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden">
       {/* ─── Desktop Sidebar ─── */}
       <aside
         className="hidden md:flex flex-col shrink-0 inset-y-0 left-0 z-50 border-r bg-background overflow-hidden"
@@ -349,6 +362,72 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
             >
               {resolvedTheme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
+            {/* Pemilih warna aksen */}
+            <div className="relative" ref={accentRef}>
+              <button
+                onClick={() => setAccentPickerOpen((v) => !v)}
+                className="rounded-lg p-2 hover:bg-accent transition-colors"
+                title="Ganti warna aksen"
+              >
+                <Palette size={20} />
+              </button>
+              {accentPickerOpen && (
+                <div className="absolute right-0 top-full mt-2 w-64 rounded-lg border bg-background p-3 shadow-lg z-50">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Warna Aksen
+                  </p>
+                  <div className="grid grid-cols-4 gap-2">
+                    {ACCENT_OPTIONS.map((option) => (
+                      <button
+                        key={option.key}
+                        type="button"
+                        onClick={() => {
+                          setAccent(option.key);
+                          setAccentPickerOpen(false);
+                        }}
+                        title={option.label}
+                        aria-label={option.label}
+                        className="flex h-9 w-9 items-center justify-center rounded-full border-2 transition-transform hover:scale-110"
+                        style={{
+                          backgroundColor: option.swatch,
+                          borderColor:
+                            accent === option.key ? 'hsl(var(--foreground))' : 'transparent',
+                        }}
+                      >
+                        {accent === option.key && (
+                          <Check size={16} className="text-white drop-shadow" />
+                        )}
+                      </button>
+                    ))}
+                    <label
+                      title="Warna kustom"
+                      className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-muted-foreground/50 transition-transform hover:scale-110"
+                      style={{
+                        backgroundColor: accent === 'custom' ? customColor : undefined,
+                        borderColor:
+                          accent === 'custom' ? 'hsl(var(--foreground))' : undefined,
+                      }}
+                    >
+                      {accent === 'custom' ? (
+                        <Check size={16} className="text-white drop-shadow" />
+                      ) : (
+                        <Palette size={15} className="text-muted-foreground" />
+                      )}
+                      <input
+                        type="color"
+                        value={customColor}
+                        onChange={(e) => setCustomColor(e.target.value)}
+                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                        aria-label="Pilih warna kustom"
+                      />
+                    </label>
+                  </div>
+                  <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+                    Pilih preset atau warna kustom. Pengaturan tersimpan di perangkat ini.
+                  </p>
+                </div>
+              )}
+            </div>
             <div className="relative" ref={dropdownRef}>
               <button onClick={() => setProfileDropdownOpen(!profileDropdownOpen)} className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-accent transition-colors">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-medium text-sm">{userInitial}</div>
