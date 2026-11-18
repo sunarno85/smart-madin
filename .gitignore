@@ -14,3 +14,6 @@ coverage/
 .qodo/
 .freebufftoken.txt
 test-photo.png
+
+# Cache inkremental TypeScript
+*.tsbuildinfo
