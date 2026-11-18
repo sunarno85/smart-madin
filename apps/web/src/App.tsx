@@ -84,6 +84,9 @@ const LegerPage = lazy(() =>
 const PpdbPage = lazy(() =>
   import('./pages/PpdbPage').then((m) => ({ default: m.PpdbPage })),
 );
+const AboutPage = lazy(() =>
+  import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })),
+);
 
 function FullPageLoader() {
   return (
@@ -139,6 +142,7 @@ export default function App() {
                     <Routes>
                       <Route path="/" element={<Navigate to="/dashboard" replace />} />
                       <Route path="/dashboard" element={<DashboardPage />} />
+                      <Route path="/about" element={<AboutPage />} />
                       <Route
                         path="/school-profile"
                         element={

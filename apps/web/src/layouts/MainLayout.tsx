@@ -9,7 +9,7 @@ import {
   School, ChevronDown, ChevronRight, Search, Bell,
   UserCheck, ClipboardCheck, BarChart3, FileUp,
   User, LogOut as LogOutIcon, ChevronLeft,
-  Sun, Moon, Monitor, TrendingUp, UserPlus,
+  Sun, Moon, Monitor, TrendingUp, UserPlus, Info,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -22,6 +22,7 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { label: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard' },
+  { label: 'Tentang Aplikasi', icon: <Info size={20} />, path: '/about' },
   {
     label: 'Master Data', icon: <School size={20} />,
     permission: 'settings.read',
@@ -367,6 +368,10 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
                   <div className="py-1">
+                    <Link to="/about" onClick={() => setProfileDropdownOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors">
+                      <Info size={16} />
+                      Tentang Aplikasi
+                    </Link>
                     <Link to="/school-profile" onClick={() => setProfileDropdownOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors">
                       <User size={16} />
                       Profil Madrasah
